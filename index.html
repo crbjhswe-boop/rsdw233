@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Anonymous V12.2        
+    </title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; font-family: 'Courier New', Courier, monospace; color: #ff0000; overflow: hidden; height: 100vh; width: 100vw; }
+        #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #eyes-canvas { position: fixed; top: 0; right: 0; width: 55vw; height: 100vh; z-index: 5; pointer-events: none; }
+        .container { position: absolute; top: 50%; left: 22%; transform: translate(-50%, -50%); width: 100%; max-width: 450px; background: rgba(10, 0, 0, 0.95); padding: 25px; border-radius: 8px; border: 2px solid #ff0000; box-shadow: 0 0 40px #ff0000; z-index: 10; box-sizing: border-box; }
+        h2 { margin: 0 0 25px 0; color: #ff0000; text-align: center; letter-spacing: 2px; text-shadow: 0 0 15px #ff0000; font-size: 26px; text-transform: uppercase; }
+        label { display: block; text-align: left; margin: 15px 0 5px 0; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; color: #ff5555; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #aa0000; background: rgba(0, 0, 0, 0.85); color: #ff3333; border-radius: 4px; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; font-size: 14px; }
+        input:focus, textarea:focus, select:focus { outline: none; box-shadow: 0 0 20px #ff0000; border-color: #ff0000; }
+        button { width: 100%; background-color: #ff0000; color: black; padding: 14px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; font-family: 'Courier New', Courier, monospace; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; margin-top: 5px; }
+        button:hover { background-color: #000; color: #ff0000; border: 2px solid #ff0000; box-shadow: 0 0 20px #ff0000; }
+        .result { margin-top: 15px; padding: 10px; border-radius: 4px; font-weight: bold; text-align: center; border: 1px solid #ff0000; background: rgba(30, 0, 0, 0.95); }
+        .footer-credit { position: fixed; bottom: 15px; right: 20px; font-size: 13px; color: #ff0000; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 8px #ff0000; z-index: 20; background: rgba(0, 0, 0, 0.8); padding: 5px 12px; border: 1px solid #880000; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div id="eyes-canvas"></div>
+<div class="container">
+    <h2>Gmail Anonymous V12.2</h2>
+    <form action="/run-script" method="POST">
+        <label>Display Name:</label>
+        <input type="text" name="fake_name" placeholder="e.g. Steam Support, Anonymous" required>
+        <label>Target Email:</label>
+        <input type="email" name="friend_email" placeholder="Anonymous@gmail.com" required>
+        <label>Message Content:</label>
+        <textarea name="prank_message" rows="4" placeholder="Enter your dangerous message here..." required></textarea>
+        <label>Message Style:</label>
+        <select name="style">
+            <option value="normal">Normal Message</option>
+            <option value="hacker">Hacker Mode</option>
+        </select>
+        <button type="submit">Execute Exploit</button>
+    </form>
+    {% if result %} <div class="result">{{ result }}</div> {% endif %}
+</div>
+<div class="footer-credit">Created by Rom & Ori</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    const matrixCanvas = document.getElementById('matrix');
+    const matrixCtx = matrixCanvas.getContext('2d');
+    matrixCanvas.width = window.innerWidth; matrixCanvas.height = window.innerHeight;
+    const alphabet = "01"; const fontSize = 16; const columns = matrixCanvas.width / fontSize;
+    const rainDrops = []; for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
+    const drawMatrix = () => {
+        matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)'; matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+        matrixCtx.fillStyle = '#ff0000'; matrixCtx.font = fontSize + 'px monospace';
+        for (let i = 0; i < rainDrops.length; i++) {
+            const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+            matrixCtx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+            if (rainDrops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) { rainDrops[i] = 0; }
+            rainDrops[i]++;
+        }
+    };
+    setInterval(drawMatrix, 30);
+    const canvasContainer = document.getElementById('eyes-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+    camera.position.z = 10;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    canvasContainer.appendChild(renderer.domElement);
+    const socketMat = new THREE.MeshBasicMaterial({ color: 0x110000 });
+    const pupilMat = new THREE.MeshPhongMaterial({ color: 0xff0000, emissive: 0xbb0000, shininess: 100 });
+    const leftEyeGroup = new THREE.Group(); const rightEyeGroup = new THREE.Group();
+    leftEyeGroup.position.set(-1.2, 0, 0); rightEyeGroup.position.set(1.2, 0, 0);
+    const leftSocket = new THREE.Mesh(new THREE.SphereGeometry(0.8, 32, 32), socketMat);
+    const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32), pupilMat);
+    leftPupil.position.z = 0.65; leftEyeGroup.add(leftSocket); leftEyeGroup.add(leftPupil);
+    const rightSocket = new THREE.Mesh(new THREE.SphereGeometry(0.8, 32, 32), socketMat);
+    const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32), pupilMat);
+    rightPupil.position.z = 0.65; rightEyeGroup.add(rightSocket); rightEyeGroup.add(rightPupil);
+    scene.add(leftEyeGroup); scene.add(rightEyeGroup);
+    const mainLight = new THREE.DirectionalLight(0xff0000, 3);
+    mainLight.position.set(0, 0, 10); scene.add(mainLight);
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (event) => {
+        const rect = canvasContainer.getBoundingClientRect();
+        mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    });
+    const animate = () => {
+        requestAnimationFrame(animate);
+        const targetRotationY = mouseX * 0.6; const targetRotationX = -mouseY * 0.5;
+        leftEyeGroup.rotation.y = THREE.MathUtils.lerp(leftEyeGroup.rotation.y, targetRotationY, 0.1);
+        leftEyeGroup.rotation.x = THREE.MathUtils.lerp(leftEyeGroup.rotation.x, targetRotationX, 0.1);
+        rightEyeGroup.rotation.y = THREE.MathUtils.lerp(rightEyeGroup.rotation.y, targetRotationY, 0.1);
+        rightEyeGroup.rotation.x = THREE.MathUtils.lerp(rightEyeGroup.rotation.x, targetRotationX, 0.1);
+        const floatOffset = Math.sin(Date.now() * 0.002) * 0.05;
+        leftEyeGroup.position.y = floatOffset; rightEyeGroup.position.y = floatOffset;
+        renderer.render(scene, camera);
+    };
+    animate();
+    window.addEventListener('resize', () => {
+        camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    });
+</script>
+</body>
+</html>
